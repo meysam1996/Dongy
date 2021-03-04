@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/python,django,venv
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,django,venv
+# Created by https://www.toptal.com/developers/gitignore/api/vscode,django,python,venv
+# Edit at https://www.toptal.com/developers/gitignore?templates=vscode,django,python,venv
 
 ### Django ###
 *.log
@@ -223,4 +223,12 @@ dmypy.json
 pyvenv.cfg
 pip-selfcheck.json
 
-# End of https://www.toptal.com/developers/gitignore/api/python,django,venv
+### vscode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# End of https://www.toptal.com/developers/gitignore/api/vscode,django,python,venv
