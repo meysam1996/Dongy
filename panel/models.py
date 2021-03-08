@@ -6,6 +6,18 @@ from django.conf import settings
 
 # Create your models here.
 
+class Invoice(models.Model):
+    name = models.CharField(
+        max_length=60,
+        validators=[MinLengthValidator(3, " must be greater than 3 character")]
+        )
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return self.name
+
+
 class People(models.Model):
     name = models.CharField(
         max_length=60,
@@ -19,12 +31,14 @@ class People(models.Model):
         blank=True
         )
     active = models.BooleanField(default=True)
+    invoice = models.ForeignKey(Invoice,on_delete=models.CASCADE)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,11}$', message="Phone number must be entered in the format: '0912*******'. Up to 11 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=11, blank=True) # validators should be a list
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     
 
     def __str__(self):
-        return "%s : %s => %s" % (self.name, self.phone_number, self.active)
+        return self.name
 
 
 class Transaction(models.Model):
@@ -36,23 +50,11 @@ class Transaction(models.Model):
     payer = models.ForeignKey(People, null=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return "Transaction_name: %s => Price: %s => Payer: %s" % (self.name, self.price, self.payer)
-
-
-class Invoice(models.Model):
-    name = models.CharField(
-        max_length=60,
-        validators=[MinLengthValidator(3, " must be greater than 3 character")]
-        )
-    people = models.ManyToManyField(People)
-    transaction = models.ManyToManyField(Transaction)
-
-    @property
-    def people_num(self):
-        return self.people.all().count()
-
+    invoice = models.ForeignKey(Invoice,on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
+
+

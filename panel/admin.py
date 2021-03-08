@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import People, Invoice, Transaction
+from panel.models import Invoice, People, Transaction
 
 # Register your models here.
 
 admin.site.register(Invoice)
-admin.site.register(Transaction)
 admin.site.register(People)
+admin.site.register(Transaction)
