@@ -96,10 +96,8 @@ class ActionCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('panel:all')
 
     def get(self, request, *args, **kwargs):
-        Inv = get_object_or_404(Invoice, id=pk, owner= self.request.user)
-        form = TransactionForm()
-        ctx = {'form': form}
-        return render(request, self.template_name, ctx)
+        self.invoice = Invoice.objects.get(id=self.kwargs['invoice_id'])
+        return super(ActionCreateView, self).get(request, *args, **kwargs)
 
     def post(self, request, pk=None):
         Inv = get_object_or_404(Invoice, id=pk, owner= self.request.user)
