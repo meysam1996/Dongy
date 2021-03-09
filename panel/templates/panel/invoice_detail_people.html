@@ -19,10 +19,10 @@
   {% if person.owner == user %}
     <li>
         
-        <a href="{% url 'panel:invoice_detail'  invoice.id %}">{{ person.name }}</a>
+        <a href="#">{{ person.name }}</a>
         
-        (<a href="{% url 'panel:invoice_update' invoice.id %}">Edit</a> |
-        <a href="{% url 'panel:invoice_delete' invoice.id %}">Delete</a>)
+        (<a href="#">Edit</a> |
+        <a href="#">Delete</a>)
         
         {% comment %} {% if user.is_authenticated %}
         

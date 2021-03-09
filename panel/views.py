@@ -3,10 +3,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import CreateView
 
 from panel.models import Invoice, People, Transaction
 from panel.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
-from panel.forms import InvoiceForm
+from panel.forms import InvoiceForm, TransactionForm
 
 # Create your views here.
 class InviceListView(OwnerListView):
@@ -74,7 +75,7 @@ class InvoiceUpdateView(LoginRequiredMixin,View):
 
     def post(self, request, pk=None):
         Inv = get_object_or_404(Invoice, id=pk, owner= self.request.user)
-        form = InvoiceForm(request.POST)
+        form = InvoiceForm(request.POST, instance=Inv)
         if not form.is_valid():
             ctx = {'form': form}
             return render(request, self.template_name, ctx)
@@ -86,3 +87,27 @@ class InvoiceUpdateView(LoginRequiredMixin,View):
 
 class InvoiceDeleteView(OwnerDeleteView):
     model = Invoice
+
+
+class ActionCreateView(LoginRequiredMixin, CreateView):
+    model = Transaction
+    fields = ['name', 'price', 'payer']
+    template_name = 'panel/action_form.html'
+    success_url = reverse_lazy('panel:all')
+
+    def get(self, request, *args, **kwargs):
+        Inv = get_object_or_404(Invoice, id=pk, owner= self.request.user)
+        form = TransactionForm()
+        ctx = {'form': form}
+        return render(request, self.template_name, ctx)
+
+    def post(self, request, pk=None):
+        Inv = get_object_or_404(Invoice, id=pk, owner= self.request.user)
+        form = InvoiceForm(request.POST, instance=Inv)
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template_name, ctx)
+
+        Inv = form.save(commit=False)
+        Inv.save()
+        return redirect(self.success_url)

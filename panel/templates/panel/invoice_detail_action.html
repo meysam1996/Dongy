@@ -1,5 +1,8 @@
 {% extends "base_menu.html" %}
 {% block content %}
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'panel/style.css' %}">
 <h1>Transactions</h1>
 {% comment %} <div style="float:right">
 <!-- https://www.w3schools.com/howto/howto_css_search_button.asp -->
@@ -19,10 +22,10 @@
   {% if transaction.owner == user %}
     <li>
         
-        <a href="{% url 'panel:invoice_detail'  invoice.id %}">{{ transaction.name }}</a>
+        <h6>{{ transaction.name }}</h6>
         
-        (<a href="{% url 'panel:invoice_update' invoice.id %}">Edit</a> |
-        <a href="{% url 'panel:invoice_delete' invoice.id %}">Delete</a>)
+        (<a href="#">Edit</a> |
+        <a href="#">Delete</a>)
         
         {% comment %} {% if user.is_authenticated %}
         
@@ -34,6 +37,15 @@
         {% endif %}
         {{ transaction.natural_updated }}
         </small>
+        <br>
+        <p>Price : {{ transaction.price }} Toman</p>
+        <p>Payer : {{ transaction.payer }}</p>
+        <small>
+            Create at {{ transaction.created_at }}
+        </small>
+        <br>
+        <br>
+        <br> 
         
     </li>
   {% endif %}
@@ -44,13 +56,9 @@
 {% endif %}
 </p>
 <p>
-{% comment %} {% if user.is_authenticated %}
-<a href="{% url 'panel:action_create' %}">Add an Transactions</a> | {% endcomment %}
-
-{% comment %} <a href="{% url 'logout' %}?next={% url 'home' %}">Logout</a>
-{% else %}
-<a href="{% url 'login' %}?next={% url 'panel:all' %}">Login</a> {% endcomment %}
-{% comment %} {% endif %}
-</p> {% endcomment %}
+{% if user.is_authenticated %}
+<a href="{% url 'panel:transaction_create transaction.invoice.id' %}">Add an Transactions</a> | 
+{% endif %}
+</p> 
 
 {% endblock %}
