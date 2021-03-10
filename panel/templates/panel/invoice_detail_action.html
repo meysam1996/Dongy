@@ -63,7 +63,7 @@
 </p>
 <p>
 {% if user.is_authenticated %}
-<a href="{% url 'panel:action_create pk=invoice.id' %}">Add an Transactions</a> | 
+<a href="{% url 'panel:action_create' pk=invoice.id %}">Add an Transactions</a> | 
 {% endif %}
 </p> 
 
