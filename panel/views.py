@@ -109,4 +109,3 @@ class ActionCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     
-    

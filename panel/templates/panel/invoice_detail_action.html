@@ -3,10 +3,15 @@
 {% load static %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'panel/style.css' %}">
-<h1>Transactions</h1>
-<small>
-  {{invoice.name}}
-</small>
+<style>
+  body {
+    background-color: #fff;
+  }
+</style>
+<h1 style="text-align:left;">Transactions</h1>
+<h4 style="text-align:left;">
+ Invoice > {{invoice.name}}
+</h4>
 
 {% comment %} <div style="float:right">
 <!-- https://www.w3schools.com/howto/howto_css_search_button.asp -->
@@ -19,48 +24,46 @@
 </form>
 </div> {% endcomment %}
 
-<p>
+
 {% if transactions %}
-<ul>
-  <div class="card card-1">
+
+<div class="flex-container">
   {% for transaction in transactions %}
   {% if transaction.owner == user %}
-    <li>
+
+  <div class="card card-1" style="height: 222px;">
+   
         
-        <h6>{{ transaction.name }}</h6>
-        
-        (<a href="#">Edit</a> |
-        <a href="#">Delete</a>)
-        
-        {% comment %} {% if user.is_authenticated %}
-        
-        {% endif %} {% endcomment %}
-        
-        <small>
-        {% if transaction.owner.username %}
-            Created by {{ transaction.owner.username }}
-        {% endif %}
-        {{ transaction.natural_updated }}
-        </small>
+        <h6>{{ transaction.name }}</h6>   
         <br>
         <p>Price : {{ transaction.price }} Toman</p>
         <p>Payer : {{ transaction.payer }}</p>
         <small>
+            Created by {{ transaction.owner.username }}<br>
             Create at {{ transaction.created_at }}
         </small>
         <br>
+        <small>
+        {% if transaction.owner.username %}
+            
+        {% endif %}
+        </small>
         <br>
-        <br> 
+        (<a href="#">Edit</a> |
+        <a href="#">Delete</a>)
         
-    </li>
-  {% endif %}
-  {% endfor %}
   </div>
-</ul>
+
+{% endif %}
+{% endfor %}
+</div>
+  
+
+
 {% else %}
   <p>You have not entered any transactions.</p>
 {% endif %}
-</p>
+
 <p>
 {% if user.is_authenticated %}
 <a href="{% url 'panel:action_create' pk=invoice.id %}">Add an Transactions</a> | 
