@@ -4,8 +4,6 @@ from django.urls import reverse_lazy, reverse
 from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
-from braces.views import SelectRelatedMixin
-from django import forms
 
 from panel.models import Invoice, People, Transaction
 from panel.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
@@ -91,17 +89,25 @@ class InvoiceDeleteView(OwnerDeleteView):
     model = Invoice
 
 
-class ActionCreateView(LoginRequiredMixin, SelectRelatedMixin, CreateView):
+class ActionCreateView(LoginRequiredMixin, CreateView):
     model = Transaction
-    form_class = forms.TransactionForm
+    fields = ['name', 'price', 'payer']
     template_name = 'panel/action_form.html'
     success_url = reverse_lazy('panel:all')
- 
 
-    def create_form(self, *args, **kwargs):
-        form = super(ActionCreateView, self).create_form(*args, **kwargs)
+    def get(self, request, *args, **kwargs):
+        self.invoice = Invoice.objects.get(id=self.kwargs['pk'])
+        return super(ActionCreateView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ActionCreateView, self).get_context_data(**kwargs)
+        context['invoice'] = self.invoice
+        return context
+
+    def form_valid(self, form):
+        form.instance.invoice = self.invoice
         form.instance.user = self.request.user
-        form.instance.invoice_id = self.kwargs['pk']
-        return form
+        return super().form_valid(form)
+
     
     
