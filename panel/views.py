@@ -93,20 +93,19 @@ class ActionCreateView(LoginRequiredMixin, CreateView):
     model = Transaction
     fields = ['name', 'price', 'payer']
     template_name = 'panel/action_form.html'
-    success_url = reverse_lazy('panel:all')
 
-    def get(self, request, *args, **kwargs):
-        self.invoice = Invoice.objects.get(id=self.kwargs['pk'])
-        return super(ActionCreateView, self).get(request, *args, **kwargs)
+    def get_success_url(self):
+        return reverse('panel:invoice_detail_actions', args=[self.invoice.id])
 
     def get_context_data(self, **kwargs):
-        context = super(ActionCreateView, self).get_context_data(**kwargs)
-        context['invoice'] = self.invoice
-        return context
+        self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
+        kwargs['invoice'] = self.invoice
+        return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
+        self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
+        form.instance.owner = self.request.user
         form.instance.invoice = self.invoice
-        form.instance.user = self.request.user
         return super().form_valid(form)
 
     
