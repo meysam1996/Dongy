@@ -99,13 +99,15 @@ class ActionCreateView(LoginRequiredMixin, CreateView):
         self.invoice = Invoice.objects.get(id=self.kwargs['invoice_id'])
         return super(ActionCreateView, self).get(request, *args, **kwargs)
 
-    def post(self, request, pk=None):
-        Inv = get_object_or_404(Invoice, id=pk, owner= self.request.user)
-        form = InvoiceForm(request.POST, instance=Inv)
-        if not form.is_valid():
-            ctx = {'form': form}
-            return render(request, self.template_name, ctx)
+    def get_context_data(self, **kwargs):
+        context = super(ActionCreateView, self).get_context_data(**kwargs)
+        context['invoice'] = self.invoice
+        return context
 
-        Inv = form.save(commit=False)
-        Inv.save()
-        return redirect(self.success_url)
+    def form_valid(self, form):
+        form.instance.invoice = self.invoice
+        form.instance.owner = self.request.user
+        return super(ActionCreateView, self).form_valid(form)
+
+    
+    
