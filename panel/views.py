@@ -92,8 +92,9 @@ class InvoiceDeleteView(OwnerDeleteView):
 
 
 class ActionCreateView(LoginRequiredMixin, CreateView):
-    model = Transaction
-    fields = ['name', 'price', 'payer']
+    # model = Transaction
+    # fields = ['name', 'price', 'payer']
+    form_class = TransactionForm
     template_name = 'panel/action_form.html'
 
     def get_success_url(self):
@@ -103,6 +104,11 @@ class ActionCreateView(LoginRequiredMixin, CreateView):
         self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
         kwargs['invoice'] = self.invoice
         return super().get_context_data(**kwargs)
+    
+    def get_form_kwargs(self, **kwargs):
+        self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
+        kwargs['pk'] = self.invoice
+        return kwargs
 
     def form_valid(self, form):
         self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
