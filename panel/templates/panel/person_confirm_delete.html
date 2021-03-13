@@ -1,8 +1,8 @@
 {% extends "base_menu.html" %}
 {% block content %}
-<h1>Delete Transaction</h1>
+<h1>Delete Person</h1>
 
-<p>Are you sure you want to delete the Transaction: {{ transaction.name }}?</p>
+<p>Are you sure you want to delete the Person: {{ people.name }}?</p>
 
 <form action="" method="POST">
   {% csrf_token %}

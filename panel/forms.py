@@ -18,3 +18,9 @@ class TransactionForm(forms.ModelForm):
         invoice = kwargs.get('pk')
         if invoice:
             self.fields['payer'].queryset = People.objects.filter(invoice = invoice)
+
+
+class PeopleForm(forms.ModelForm):
+    class Meta:
+        model = People
+        fields = ['name', 'username', 'active', 'phone_number']

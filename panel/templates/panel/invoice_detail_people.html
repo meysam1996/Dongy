@@ -21,8 +21,8 @@
         
         <a href="#">{{ person.name }}</a>
         
-        (<a href="#">Edit</a> |
-        <a href="#">Delete</a>)
+        (<a href="{% url 'panel:person_update' pk=person.id %}">Edit</a> |
+        <a href="{% url 'panel:person_delete' pk=person.id %}">Delete</a>)
         
         {% comment %} {% if user.is_authenticated %}
         
@@ -44,13 +44,9 @@
 {% endif %}
 </p>
 <p>
-{% comment %} {% if user.is_authenticated %}
-<a href="{% url 'panel:action_create' %}">Add an Transactions</a> | {% endcomment %}
-
-{% comment %} <a href="{% url 'logout' %}?next={% url 'home' %}">Logout</a>
-{% else %}
-<a href="{% url 'login' %}?next={% url 'panel:all' %}">Login</a> {% endcomment %}
-{% comment %} {% endif %}
-</p> {% endcomment %}
+{% if user.is_authenticated %}
+<a href="{% url 'panel:person_create' pk=invoice.id %}">Add an Transactions</a> |
+{% endif %}
+</p>
 
 {% endblock %}
