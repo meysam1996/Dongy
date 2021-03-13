@@ -11,4 +11,10 @@ class InvoiceForm(forms.ModelForm):
 class TransactionForm(forms.ModelForm):
     class Meta:
         model = Transaction
-        fields = ['name', 'price', 'payer']
+        fields = ['name', 'price']
+
+    def __init__(self, *args, **kwargs):
+        super(TransactionForm, self).__init__(*args, **kwargs)
+        invoice = kwargs.get('pk')
+        if invoice:
+            self.fields['payer'].queryset = People.objects.filter(invoice = invoice)

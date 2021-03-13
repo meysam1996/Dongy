@@ -49,8 +49,8 @@
         {% endif %}
         </small>
         <br>
-        (<a href="#">Edit</a> |
-        <a href="#">Delete</a>)
+        (<a href="{% url 'panel:action_update' pk=transaction.id %}">Edit</a> |
+        <a href="{% url 'panel:action_delete' pk=transaction.id %}">Delete</a>)
         
   </div>
 

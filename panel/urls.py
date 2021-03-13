@@ -15,4 +15,8 @@ urlpatterns = [
         views.InvoiceDeleteView.as_view(success_url=reverse_lazy('panel:all')), name='invoice_delete'),
     path('Invoice/<int:pk>',
         views.ActionCreateView.as_view(success_url=reverse_lazy('panel:all')), name='action_create'),
+    path('action/<int:pk>/update',
+        views.ActionUpdateView.as_view(success_url=reverse_lazy('panel:all')), name='action_update'),
+    path('action/<int:pk>/delete',
+        views.ActionDeleteView.as_view(success_url=reverse_lazy('panel:all')), name='action_delete'),
 ]

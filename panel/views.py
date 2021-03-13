@@ -109,3 +109,28 @@ class ActionCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     
+class ActionUpdateView(LoginRequiredMixin, View):
+    template_name = 'panel/action_form.html'
+    success_url = reverse_lazy('panel:invoice_detail_actions')
+
+    def get(self, request, pk):
+        Tr = get_object_or_404(Transaction, id=pk, owner = self.request.user)
+        form = TransactionForm(instance=Tr)
+        ctx = {'form': form}
+        return render(request, self.template_name, ctx)
+
+    def post(self, request, pk=None):
+        Tr = get_object_or_404(Transaction, id=pk, owner= self.request.user)
+        form = TransactionForm(request.POST, instance=Tr)
+        if not form.is_valid():
+            ctx = {'form': form}
+            return render(request, self.template_name, ctx)
+        
+        Tr = form.save(commit=False)
+        Tr.save()
+        return redirect(self.success_url)
+
+
+class ActionDeleteView(OwnerDeleteView):
+    model = Transaction
+    template_name = 'panel/action_confirm_delete.html'
