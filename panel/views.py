@@ -1,7 +1,7 @@
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
 from django.views.generic.edit import FormView
@@ -93,27 +93,39 @@ class InvoiceDeleteView(OwnerDeleteView):
 
 class ActionCreateView(LoginRequiredMixin, CreateView):
     # model = Transaction
-    # fields = ['name', 'price', 'payer']
     form_class = TransactionForm
     template_name = 'panel/action_form.html'
 
     def get_success_url(self):
-        return reverse('panel:invoice_detail_actions', args=[self.invoice.id])
+        return reverse_lazy('panel:invoice_detail_actions', args=[self.invoice.id])
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(ActionCreateView, self).get_form_kwargs(*args, **kwargs)
+        self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
+        kwargs['pk'] = self.invoice
+        return kwargs
 
     def get_context_data(self, **kwargs):
         self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
         kwargs['invoice'] = self.invoice
         return super().get_context_data(**kwargs)
-    
-    def get_form_kwargs(self, **kwargs):
-        self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
-        kwargs['pk'] = self.invoice
-        return kwargs
 
     def form_valid(self, form):
         self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
         form.instance.owner = self.request.user
         form.instance.invoice = self.invoice
+        self.object = form.save(commit=False)
+        self.object.save()
+
+        persons = str(self.request.POST.get('persons'))
+        persons = persons.split(',')
+        pl = []
+        for person in persons:
+            pl.append(People.objects.get_or_create(name=person))
+        self.object.persons.add(pl)
+        self.object.save()
+        form.save_m2m()
+
         return super().form_valid(form)
 
     
@@ -189,3 +201,14 @@ class PeopleUpdateView(LoginRequiredMixin, View):
 class PeopleDeleteView(OwnerDeleteView):
     model = People
     template_name = 'panel/person_confirm_delete.html'
+
+
+# class TransactionResultDong(LoginRequiredMixin, View):
+#     model = Transaction
+#     template_name = 'panel/result_detail_action.html'
+
+#     def get(self, request, pk):
+#         price = Transaction.objects.get(id=pk)
+#         transactions = Transaction.objects.filter(invoice=Inv).order_by('-updated_at')
+#         ctx = {'invoice': Inv, 'transactions': transactions}
+#         return render(request, self.template_name, ctx)

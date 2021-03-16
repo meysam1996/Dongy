@@ -39,14 +39,11 @@
         <p>Price : {{ transaction.price }} Toman</p>
         <p>Payer : {{ transaction.payer }}</p>
         <small>
-            Created by {{ transaction.owner.username }}<br>
-            Create at {{ transaction.created_at }}
+            People : {% for person in transaction.persons.all %}{{ person }} , {% endfor %}     
         </small>
         <br>
         <small>
-        {% if transaction.owner.username %}
-            
-        {% endif %}
+             Create at {{ transaction.created_at }}
         </small>
         <br>
         (<a href="{% url 'panel:action_update' pk=transaction.id %}">Edit</a> |

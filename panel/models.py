@@ -52,9 +52,7 @@ class Transaction(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     invoice = models.ForeignKey(Invoice,on_delete=models.CASCADE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    persons = models.ManyToManyField(People, related_name="action_persons")
 
     def __str__(self):
         return self.name
-
-
-
