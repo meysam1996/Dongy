@@ -39,7 +39,8 @@
         <p>Price : {{ transaction.price }} Toman</p>
         <p>Payer : {{ transaction.payer }}</p>
         <small>
-            People : {% for person in transaction.persons.all %}{{ person }} , {% endfor %}     
+            People : {% for person in transaction.persons.all %}{{ person }} , {% endfor %}<br>
+            count-p : {{ transaction.persons.all.count }}      
         </small>
         <br>
         <small>

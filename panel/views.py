@@ -112,20 +112,16 @@ class ActionCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.invoice = get_object_or_404(Invoice, id = self.kwargs['pk'])
-        form.instance.owner = self.request.user
-        form.instance.invoice = self.invoice
-        self.object = form.save(commit=False)
-        self.object.save()
+        instance = form.save(commit=False)
+        instance.owner = self.request.user
+        instance.invoice = self.invoice
+        instance.save()
 
-        persons = str(self.request.POST.get('persons'))
-        persons = persons.split(',')
-        pl = []
-        for person in persons:
-            pl.append(People.objects.get_or_create(name=person))
-        self.object.persons.add(pl)
-        self.object.save()
-        form.save_m2m()
-
+        persons=form.cleaned_data['persons']
+        for person in persons:    
+            instance.persons.add(person)
+            instance.save()
+            form.save_m2m()
         return super().form_valid(form)
 
     

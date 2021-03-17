@@ -35,8 +35,8 @@ class People(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,11}$', message="Phone number must be entered in the format: '0912*******'. Up to 11 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=11, blank=True) # validators should be a list
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    
 
+    
     def __str__(self):
         return self.name
 
@@ -53,6 +53,7 @@ class Transaction(models.Model):
     invoice = models.ForeignKey(Invoice,on_delete=models.CASCADE)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     persons = models.ManyToManyField(People, related_name="action_persons")
+
 
     def __str__(self):
         return self.name
