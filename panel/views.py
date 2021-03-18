@@ -1,10 +1,10 @@
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
-from django.views.generic.edit import FormView
+from django.db.models import F, Count, DecimalField, IntegerField, CharField, FloatField, ExpressionWrapper
 
 from panel.models import Invoice, People, Transaction
 from panel.owner import OwnerListView, OwnerDetailView, OwnerCreateView, OwnerUpdateView, OwnerDeleteView
@@ -29,7 +29,9 @@ class InvoiceDetailActionsView(OwnerDetailView):
 
     def get(self, request, pk):
         Inv = Invoice.objects.get(id=pk)
-        transactions = Transaction.objects.filter(invoice=Inv).order_by('-updated_at')
+        transactions = Transaction.objects.filter(invoice=Inv).annotate(person_dong=ExpressionWrapper(
+            F('price')/Count(F('persons')),
+            output_field=IntegerField()))
         ctx = {'invoice': Inv, 'transactions': transactions}
         return render(request, self.template_name, ctx)
 
@@ -200,11 +202,11 @@ class PeopleDeleteView(OwnerDeleteView):
 
 
 # class TransactionResultDong(LoginRequiredMixin, View):
-#     model = Transaction
-#     template_name = 'panel/result_detail_action.html'
+#     template_name = 'panel/action_result.html'
+#     success_url = reverse_lazy('panel:all')
 
 #     def get(self, request, pk):
-#         price = Transaction.objects.get(id=pk)
-#         transactions = Transaction.objects.filter(invoice=Inv).order_by('-updated_at')
-#         ctx = {'invoice': Inv, 'transactions': transactions}
+#         Inv = Invoice.objects.get(id=pk)
+#         transactions = Transaction.objects.filter(invoice=Inv).annotate(person_dong=ExpressionWrapper(F('price')/Count(F('persons')),output_field=IntegerField()))
+#         ctx = {'transactions': transactions}
 #         return render(request, self.template_name, ctx)

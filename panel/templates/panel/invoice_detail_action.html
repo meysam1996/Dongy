@@ -31,7 +31,7 @@
   {% for transaction in transactions %}
   {% if transaction.owner == user %}
 
-  <div class="card card-1" style="height: 222px;">
+  <div class="card card-2" style="height: 222px;">
    
         
         <h6>{{ transaction.name }}</h6>   
@@ -40,7 +40,11 @@
         <p>Payer : {{ transaction.payer }}</p>
         <small>
             People : {% for person in transaction.persons.all %}{{ person }} , {% endfor %}<br>
-            count-p : {{ transaction.persons.all.count }}      
+                  {% for person in transaction.persons.all %}
+                    {% if person != transaction.payer %}
+                    {{ person }} has to pay $ {{ transaction.person_dong }} to {{transaction.payer}}
+                    {% endif %}
+                  {% endfor %}       
         </small>
         <br>
         <small>
@@ -64,7 +68,7 @@
 
 <p>
 {% if user.is_authenticated %}
-<a href="{% url 'panel:action_create' pk=invoice.id %}">Add an Transactions</a> | 
+<a href="{% url 'panel:action_create' pk=invoice.id %}">Add an Transactions</a> |
 {% endif %}
 </p> 
 
