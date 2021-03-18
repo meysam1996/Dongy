@@ -199,14 +199,3 @@ class PeopleUpdateView(LoginRequiredMixin, View):
 class PeopleDeleteView(OwnerDeleteView):
     model = People
     template_name = 'panel/person_confirm_delete.html'
-
-
-# class TransactionResultDong(LoginRequiredMixin, View):
-#     template_name = 'panel/action_result.html'
-#     success_url = reverse_lazy('panel:all')
-
-#     def get(self, request, pk):
-#         Inv = Invoice.objects.get(id=pk)
-#         transactions = Transaction.objects.filter(invoice=Inv).annotate(person_dong=ExpressionWrapper(F('price')/Count(F('persons')),output_field=IntegerField()))
-#         ctx = {'transactions': transactions}
-#         return render(request, self.template_name, ctx)

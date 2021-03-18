@@ -25,6 +25,4 @@ urlpatterns = [
         views.PeopleUpdateView.as_view(success_url=reverse_lazy('panel:all')), name='person_update'),
     path('Person/<int:pk>/deletePerson',
         views.PeopleDeleteView.as_view(success_url=reverse_lazy('panel:all')), name='person_delete'),
-    # path('Invoice/<int:pk>/Dong',
-    #     views.TransactionResultDong.as_view(success_url=reverse_lazy('panel:all')), name='action_result'),
 ]
